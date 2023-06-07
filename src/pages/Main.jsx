@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Button,
   Grid,
@@ -14,10 +14,6 @@ const Main = () => {
   const [seats, setSeats] = useState(Array(80).fill(false));
   const [numSeats, setNumSeats] = useState(1);
   const toast = useToast();
-
-  useEffect(() => {
-    reserveRandomSeats(5);
-  }, []);
 
   const reserveSeats = () => {
     if (numSeats > 7) {
@@ -75,22 +71,6 @@ const Main = () => {
     tost(reservedSeats.join(" ,"));
   };
 
-  const reserveRandomSeats = (count) => {
-    const newSeats = [...seats];
-    const reservedSeats = [];
-
-    while (count > 0) {
-      const randomIndex = Math.floor(Math.random() * 80);
-      if (!newSeats[randomIndex]) {
-        newSeats[randomIndex] = true;
-        reservedSeats.push(randomIndex + 1);
-        count--;
-      }
-    }
-
-    setSeats(newSeats);
-  };
-
   const tost = (String) => {
     toast({
       title: "Seats Reserved",
@@ -106,7 +86,7 @@ const Main = () => {
       let ans = find(i, i + 6);
       if (numSeats <= ans) {
         if (ans < 7) {
-          if (i == 77) {
+          if (i === 77) {
             return 3 - ans + i;
           } else {
             return 7 - ans + i;
@@ -122,7 +102,7 @@ const Main = () => {
   const find = (start, end) => {
     let ans = -1;
     for (let i = start; i <= end; i++) {
-      if (seats[i] == false) {
+      if (seats[i] === false) {
         ans += 1;
       }
     }
