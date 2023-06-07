@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Grid,
   GridItem,
   HStack,
+  Heading,
   Input,
   VStack,
   useToast,
@@ -13,6 +14,10 @@ const Main = () => {
   const [seats, setSeats] = useState(Array(80).fill(false));
   const [numSeats, setNumSeats] = useState(1);
   const toast = useToast();
+
+  useEffect(() => {
+    reserveRandomSeats(5);
+  }, []);
 
   const reserveSeats = () => {
     if (numSeats > 7) {
@@ -70,6 +75,22 @@ const Main = () => {
     tost(reservedSeats.join(" ,"));
   };
 
+  const reserveRandomSeats = (count) => {
+    const newSeats = [...seats];
+    const reservedSeats = [];
+
+    while (count > 0) {
+      const randomIndex = Math.floor(Math.random() * 80);
+      if (!newSeats[randomIndex]) {
+        newSeats[randomIndex] = true;
+        reservedSeats.push(randomIndex + 1);
+        count--;
+      }
+    }
+
+    setSeats(newSeats);
+  };
+
   const tost = (String) => {
     toast({
       title: "Seats Reserved",
@@ -107,6 +128,10 @@ const Main = () => {
     }
     return ans + 1;
   };
+  const countAvailableSeats = () => {
+    const availableSeats = seats.filter((seat) => !seat);
+    return availableSeats.length;
+  };
 
   return (
     <VStack p={4} spacing={4} alignItems="center">
@@ -135,6 +160,7 @@ const Main = () => {
           Submit
         </Button>
       </HStack>
+      <Heading>{`${countAvailableSeats()} seats available`}</Heading>
       <Grid
         w={{ base: "100%", md: "50%" }}
         templateColumns="repeat(7, 1fr)"
