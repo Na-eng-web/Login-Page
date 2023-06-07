@@ -16,50 +16,47 @@ const Main = () => {
 
   const reserveSeats = () => {
     if (numSeats > 7) {
-      toast({
-        title: "Invalid Input",
-        description: "Number of seats cannot exceed 7.",
-        status: "warning",
-        duration: 3000,
-        isClosable: true,
-      });
+      showToast("Invalid Input", "Number of seats cannot exceed 7.", "warning");
       return;
     }
 
-    let startIndex = findAvailableSeats(numSeats);
+    const startIndex = findAvailableSeats(numSeats);
 
     if (startIndex === -1) {
-      let a = find(0, 79);
+      const a = find(0, 79);
       if (a < numSeats) {
-        toast({
-          title:
-            a <= 0
-              ? "Seats are full"
-              : "Number of available seats are less than entered",
-          description: a > 0 ? `Only ${a} seats are available` : "",
-          status: "warning",
-          duration: 3000,
-          isClosable: true,
-        });
+        showToast(
+          a <= 0
+            ? "Seats are full"
+            : "Number of available seats are less than entered",
+          a > 0 ? `Only ${a} seats are available` : "",
+          "warning"
+        );
       } else {
         const newSeats = [...seats];
+        const reservedSeats = [];
         let sets = numSeats;
-        let reservedSeats = [];
+
         for (let i = 0; i < 80; i++) {
-          if (newSeats[i] === false && sets > 0) {
+          if (newSeats[i] == false && sets > 0) {
             newSeats[i] = true;
             reservedSeats.push(i + 1);
             sets--;
           }
         }
+
         setSeats(newSeats);
-        tost(reservedSeats.join(" ,"));
+        showToast(
+          "Seats Reserved",
+          `Seats ${reservedSeats.join(", ")} have been reserved.`,
+          "success"
+        );
       }
       return;
     }
 
     const newSeats = [...seats];
-    let reservedSeats = [];
+    const reservedSeats = [];
 
     for (let i = startIndex; i < startIndex + numSeats; i++) {
       newSeats[i] = true;
@@ -67,14 +64,18 @@ const Main = () => {
     }
 
     setSeats(newSeats);
-    tost(reservedSeats.join(" ,"));
+    showToast(
+      "Seats Reserved",
+      `Seats ${reservedSeats.join(", ")} have been reserved.`,
+      "success"
+    );
   };
 
-  const tost = (String) => {
+  const showToast = (title, description, status) => {
     toast({
-      title: "Seats Reserved",
-      description: `Seats ${String} have been reserved.`,
-      status: "success",
+      title,
+      description,
+      status,
       duration: 3000,
       isClosable: true,
     });
@@ -82,14 +83,10 @@ const Main = () => {
 
   const findAvailableSeats = (numSeats) => {
     for (let i = 0; i < seats.length; i += 7) {
-      let ans = find(i, i + 6);
+      const ans = find(i, i + 6);
       if (numSeats <= ans) {
         if (ans < 7) {
-          if (i == 77) {
-            return 3 - ans + i;
-          } else {
-            return 7 - ans + i;
-          }
+          return i == 77 ? 3 - ans + i : 7 - ans + i;
         } else {
           return ans - 7 + i;
         }
@@ -101,7 +98,7 @@ const Main = () => {
   const find = (start, end) => {
     let ans = -1;
     for (let i = start; i <= end; i++) {
-      if (seats[i] == false) {
+      if (!seats[i]) {
         ans += 1;
       }
     }
